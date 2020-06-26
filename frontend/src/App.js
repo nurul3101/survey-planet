@@ -1,7 +1,8 @@
 import React from 'react'
+import Routes from './route'
 
 function App() {
-  return <div className="App">Initial Commit from Create React App</div>
+  return <Routes />
 }
 
 export default App
