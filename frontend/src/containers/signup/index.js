@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useReducer } from 'react'
 import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -50,11 +50,35 @@ const useStyles = makeStyles((theme) => ({
 function SignUp() {
   const classes = useStyles()
 
+  /* Defines which Mode is selected*/
   const [selectedMode, setSelectedMode] = useState('signin')
+
+  /* Signin State*/
+
+  const [signinState, setSigninState] = useState({
+    email: '',
+    password: '',
+  })
+
+  const handleSigninInput = (e) => {
+    setSigninState({
+      ...signinState,
+      [e.target.name]: e.target.value,
+    })
+  }
+
+  // const handleGenderChange = (event) => {
+  //   setValue(event.target.value)
+  // }
 
   const executeSignIn = (e) => {
     e.preventDefault()
-    console.log('Sign In')
+    console.log('Sign In', signinState)
+  }
+
+  const executeSignUp = (e) => {
+    e.preventDefault()
+    console.log('Sign Up')
   }
 
   return (
@@ -81,6 +105,8 @@ function SignUp() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                value={signinState.email}
+                onChange={handleSigninInput}
               />
               <TextField
                 variant="outlined"
@@ -92,6 +118,8 @@ function SignUp() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                value={signinState.password}
+                onChange={handleSigninInput}
               />
               <Button
                 type="submit"
@@ -172,6 +200,39 @@ function SignUp() {
                     autoComplete="current-password"
                   />
                 </Grid>
+                {/* <Grid item xs={12}>
+                  <FormControl component="fieldset">
+                    <FormLabel component="legend">Gender</FormLabel>
+                    <RadioGroup
+                      aria-label="gender"
+                      name="gender1"
+                      value={value}
+                      onChange={handleGenderChange}
+                    >
+                      <FormControlLabel
+                        value="female"
+                        control={<Radio />}
+                        label="Female"
+                      />
+                      <FormControlLabel
+                        value="male"
+                        control={<Radio />}
+                        label="Male"
+                      />
+                      <FormControlLabel
+                        value="other"
+                        control={<Radio />}
+                        label="Other"
+                      />
+                      <FormControlLabel
+                        value="disabled"
+                        disabled
+                        control={<Radio />}
+                        label="(Disabled option)"
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                </Grid> */}
               </Grid>
               <Button
                 type="submit"
@@ -179,6 +240,7 @@ function SignUp() {
                 variant="contained"
                 color="primary"
                 className={classes.submit}
+                onClick={executeSignUp}
               >
                 Sign Up
               </Button>
