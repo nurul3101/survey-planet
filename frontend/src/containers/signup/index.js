@@ -10,6 +10,13 @@ import Paper from '@material-ui/core/Paper'
 import Box from '@material-ui/core/Box'
 import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
+import Radio from '@material-ui/core/Radio'
+import RadioGroup from '@material-ui/core/RadioGroup'
+import FormControl from '@material-ui/core/FormControl'
+import FormLabel from '@material-ui/core/FormLabel'
+import InputLabel from '@material-ui/core/InputLabel'
+import MenuItem from '@material-ui/core/MenuItem'
+import Select from '@material-ui/core/Select'
 import { makeStyles } from '@material-ui/core/styles'
 
 import SurveyHeroImage from '../../assets/survey.svg'
@@ -45,6 +52,11 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  ageSelect: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+    marginTop: '3px',
+  },
 }))
 
 function SignUp() {
@@ -54,7 +66,6 @@ function SignUp() {
   const [selectedMode, setSelectedMode] = useState('signin')
 
   /* Signin State*/
-
   const [signinState, setSigninState] = useState({
     email: '',
     password: '',
@@ -67,18 +78,34 @@ function SignUp() {
     })
   }
 
-  // const handleGenderChange = (event) => {
-  //   setValue(event.target.value)
-  // }
-
   const executeSignIn = (e) => {
     e.preventDefault()
     console.log('Sign In', signinState)
   }
 
+  const [signupState, setSignupState] = useState({
+    name: '',
+    email: '',
+    password: '',
+    gender: '',
+    age: '',
+    userType: '',
+  })
+
+  const handleSignupInput = (e) => {
+    setSignupState({
+      ...signupState,
+      [e.target.name]: e.target.value,
+    })
+  }
+
+  // const handleGenderChange = (event) => {
+  //   setValue(event.target.value)
+  // }
+
   const executeSignUp = (e) => {
     e.preventDefault()
-    console.log('Sign Up')
+    console.log('Sign Up', signupState)
   }
 
   return (
@@ -154,27 +181,18 @@ function SignUp() {
             </Typography>
             <form className={classes.form} noValidate>
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12}>
                   <TextField
-                    autoComplete="fname"
-                    name="firstName"
+                    autoComplete="name"
+                    name="name"
                     variant="outlined"
                     required
                     fullWidth
-                    id="firstName"
-                    label="First Name"
+                    id="name"
+                    label="Name"
                     autoFocus
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    variant="outlined"
-                    required
-                    fullWidth
-                    id="lastName"
-                    label="Last Name"
-                    name="lastName"
-                    autoComplete="lname"
+                    value={signupState.name}
+                    onChange={handleSignupInput}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -186,6 +204,8 @@ function SignUp() {
                     label="Email Address"
                     name="email"
                     autoComplete="email"
+                    value={signupState.email}
+                    onChange={handleSignupInput}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -198,16 +218,19 @@ function SignUp() {
                     type="password"
                     id="password"
                     autoComplete="current-password"
+                    value={signupState.password}
+                    onChange={handleSignupInput}
                   />
                 </Grid>
-                {/* <Grid item xs={12}>
+                <Grid item xs={6}>
                   <FormControl component="fieldset">
                     <FormLabel component="legend">Gender</FormLabel>
                     <RadioGroup
                       aria-label="gender"
-                      name="gender1"
-                      value={value}
-                      onChange={handleGenderChange}
+                      name="gender"
+                      value={signupState.gender}
+                      onChange={handleSignupInput}
+                      style={{ flexDirection: 'row' }}
                     >
                       <FormControlLabel
                         value="female"
@@ -219,20 +242,52 @@ function SignUp() {
                         control={<Radio />}
                         label="Male"
                       />
+                    </RadioGroup>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={6}>
+                  <FormControl
+                    component="fieldset"
+                    className={classes.ageSelect}
+                  >
+                    <InputLabel id="signup-age">Age</InputLabel>
+                    <Select
+                      labelId="signup-age"
+                      id="signup-age-select"
+                      name="age"
+                      value={signupState.age}
+                      onChange={handleSignupInput}
+                      fullWidth
+                    >
+                      <MenuItem value={'less than 18'}>Less than 18</MenuItem>
+                      <MenuItem value={'18 to 50'}>18-50</MenuItem>
+                      <MenuItem value={'more than 50'}>More than 50</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl component="fieldset">
+                    <FormLabel component="legend">Role</FormLabel>
+                    <RadioGroup
+                      aria-label="user-type"
+                      name="userType"
+                      value={signupState.userType}
+                      onChange={handleSignupInput}
+                      style={{ flexDirection: 'row' }}
+                    >
                       <FormControlLabel
-                        value="other"
+                        value="coordinator"
                         control={<Radio />}
-                        label="Other"
+                        label="Coordinator"
                       />
                       <FormControlLabel
-                        value="disabled"
-                        disabled
+                        value="respondent"
                         control={<Radio />}
-                        label="(Disabled option)"
+                        label="Respondent"
                       />
                     </RadioGroup>
                   </FormControl>
-                </Grid> */}
+                </Grid>
               </Grid>
               <Button
                 type="submit"
