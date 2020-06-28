@@ -1,5 +1,6 @@
 const functions = require('firebase-functions')
 const admin = require('firebase-admin')
+const cors = require('cors')
 
 const serviceAccount = require('./survey-planet-app.json')
 
@@ -21,5 +22,9 @@ const { signUpFunc } = require('./src/auth/signup')
 exports.signup = functions
   .runWith({ timeoutSeconds: 60, memory: '1GB' })
   .https.onRequest((request, response) => {
-    signUpFunc(request, response, firestore, auth)
+    console.log('@@@@@', request.body)
+    var corsFn = cors({ origin: true })
+    corsFn(request, response, () => {
+      signUpFunc(request, response, firestore, auth)
+    })
   })

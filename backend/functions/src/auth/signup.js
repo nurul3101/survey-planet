@@ -7,20 +7,22 @@ exports.signUpFunc = async (req, res, firestore, auth) => {
       password: reqObj.password,
     })
 
-    console.log('userRecord', userRecord)
-
-    await firestore.collection('Users').add({
+    let userObj = {
       uid: userRecord.uid,
       email: reqObj.email,
       name: reqObj.name,
       gender: reqObj.gender,
       age: reqObj.age,
       userType: reqObj.userType,
-      createdAt: new Date().getTime(),
-    })
+      createdAtTs: new Date().getTime(),
+      createdAt: new Date(),
+    }
+
+    await firestore.collection('Users').add(userObj)
 
     res.status(200).send({
       success: true,
+      userObj,
     })
   } catch (error) {
     console.log('Error in creating user', error)

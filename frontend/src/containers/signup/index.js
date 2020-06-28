@@ -18,6 +18,7 @@ import Select from '@material-ui/core/Select'
 import { makeStyles } from '@material-ui/core/styles'
 
 import SurveyHeroImage from '../../assets/survey.svg'
+import configObj from '../../configuration'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -97,9 +98,28 @@ function SignUp() {
     })
   }
 
-  const executeSignUp = (e) => {
+  const executeSignUp = async (e) => {
     e.preventDefault()
-    console.log('Sign Up', signupState)
+
+    console.log(signupState)
+    let requestObj = { ...signupState }
+    try {
+      let response = await fetch(`${configObj.cloudFunctionUrl}/signup`, {
+        method: 'post',
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...requestObj,
+        }),
+      })
+
+      let responseObj = await response.json()
+      console.log(responseObj)
+    } catch (error) {
+      console.log('Error in signup', error)
+    }
   }
 
   return (
