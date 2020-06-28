@@ -99,10 +99,36 @@ function SignUp() {
     firebase
       .auth()
       .signInWithEmailAndPassword(signinState.email, signinState.password)
-      .then((user) => {
-        console.log('Successful Authentication', user)
+      .then(async (userObj) => {
+        console.log('Successful Authentication', userObj)
         //Get User Info and push into redux store
-        history.push('/dashboard')
+
+        const requestObj = {
+          uid: userObj.user.uid,
+        }
+        try {
+          const response = await fetch(
+            `${configObj.cloudFunctionUrl}/fetchUserInfo`,
+            {
+              method: 'post',
+              headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                ...requestObj,
+              }),
+            }
+          )
+
+          const responseObj = await response.json()
+
+          console.log('ResponseObj', responseObj)
+
+          history.push('/dashboard')
+        } catch (error) {
+          console.log('Error', error)
+        }
       })
       .catch((error) => {
         console.log('Error in Signin', error)

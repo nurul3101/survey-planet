@@ -15,7 +15,7 @@ exports.signUpFunc = async (req, res, firestore, auth) => {
       age: reqObj.age,
       userType: reqObj.userType,
       createdAtTs: new Date().getTime(),
-      createdAt: new Date(),
+      createdAt: new Date().toUTCString(),
     }
 
     await firestore.collection('Users').add(userObj)
