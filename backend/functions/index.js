@@ -18,6 +18,7 @@ firestore.settings({
 })
 
 const { signUpFunc } = require('./src/auth/signup')
+const { fetchUserInfoFunc } = require('./src/dashboard/fetchUserInfo')
 
 exports.signup = functions
   .runWith({ timeoutSeconds: 60, memory: '1GB' })
@@ -25,5 +26,14 @@ exports.signup = functions
     var corsFn = cors({ origin: true })
     corsFn(request, response, () => {
       signUpFunc(request, response, firestore, auth)
+    })
+  })
+
+exports.fetchUserInfo = functions
+  .runWith({ timeoutSeconds: 60, memory: '1GB' })
+  .https.onRequest((request, response) => {
+    var corsFn = cors({ origin: true })
+    corsFn(request, response, () => {
+      fetchUserInfoFunc(request, response, firestore)
     })
   })
