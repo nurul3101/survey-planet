@@ -16,6 +16,7 @@ import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
 import { makeStyles } from '@material-ui/core/styles'
+import { useHistory } from 'react-router-dom'
 
 import SurveyHeroImage from '../../assets/survey.svg'
 import configObj from '../../configuration'
@@ -60,6 +61,8 @@ const useStyles = makeStyles((theme) => ({
 
 function SignUp() {
   const classes = useStyles()
+
+  const history = useHistory()
 
   /* Defines which Mode is selected*/
   const [selectedMode, setSelectedMode] = useState('signin')
@@ -117,6 +120,12 @@ function SignUp() {
 
       let responseObj = await response.json()
       console.log(responseObj)
+
+      if (responseObj.success === true) {
+        history.push('/dashboard')
+      } else {
+        //show error
+      }
     } catch (error) {
       console.log('Error in signup', error)
     }

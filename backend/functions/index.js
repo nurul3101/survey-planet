@@ -22,7 +22,6 @@ const { signUpFunc } = require('./src/auth/signup')
 exports.signup = functions
   .runWith({ timeoutSeconds: 60, memory: '1GB' })
   .https.onRequest((request, response) => {
-    console.log('@@@@@', request.body)
     var corsFn = cors({ origin: true })
     corsFn(request, response, () => {
       signUpFunc(request, response, firestore, auth)
