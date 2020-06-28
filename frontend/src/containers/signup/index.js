@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -20,6 +20,7 @@ import { useHistory } from 'react-router-dom'
 
 import SurveyHeroImage from '../../assets/survey.svg'
 import configObj from '../../configuration'
+import firebase from '../../firebase'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -73,6 +74,18 @@ function SignUp() {
     password: '',
   })
 
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        // User is logged in
+        console.log(user)
+      } else {
+        //User is not logged in
+        console.log('Not Logged In')
+      }
+    })
+  }, [])
+
   const handleSigninInput = (e) => {
     setSigninState({
       ...signinState,
@@ -83,6 +96,17 @@ function SignUp() {
   const executeSignIn = (e) => {
     e.preventDefault()
     console.log('Sign In', signinState)
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(signinState.email, signinState.password)
+      .then((user) => {
+        console.log('Successful Authentication', user)
+        //Get User Info and push into redux store
+        history.push('/dashboard')
+      })
+      .catch((error) => {
+        console.log('Error in Signin', error)
+      })
   }
 
   const [signupState, setSignupState] = useState({
@@ -123,6 +147,7 @@ function SignUp() {
 
       if (responseObj.success === true) {
         history.push('/dashboard')
+        // store userObj in Redux store
       } else {
         //show error
       }
