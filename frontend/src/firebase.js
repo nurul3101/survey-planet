@@ -2,7 +2,7 @@ import firebase from 'firebase'
 import 'firebase/auth'
 
 var firebaseConfig = {
-  apiKey: 'AIzaSyBFNNXRnr3yvx5VICceHKuATiJr8pybmHY',
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: 'survey-planet-app.firebaseapp.com',
   databaseURL: 'https://survey-planet-app.firebaseio.com',
   projectId: 'survey-planet-app',
