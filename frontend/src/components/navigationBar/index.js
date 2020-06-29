@@ -14,8 +14,10 @@ import MenuIcon from '@material-ui/icons/Menu'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import NotificationsIcon from '@material-ui/icons/Notifications'
 import CoordinatorMenuList from '../CoordinatorMenuList'
+import RespondentMenuList from '../RespondentMenuList'
+import { useDispatch, useSelector } from 'react-redux'
 
-function NavigationBar() {
+function NavigationBar(props) {
   const [open, setOpen] = React.useState(true)
   const handleDrawerOpen = () => {
     setOpen(true)
@@ -107,6 +109,10 @@ function NavigationBar() {
   const classes = useStyles()
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight)
 
+  const user = useSelector((state) => {
+    return state.signupReducer.user
+  })
+
   return (
     <React.Fragment>
       <CssBaseline />
@@ -134,6 +140,7 @@ function NavigationBar() {
             noWrap
             className={classes.title}
           >
+            {user.userType === 'respondent' ? 'Respondent' : 'Coordinator'}{' '}
             Dashboard
           </Typography>
           <IconButton color="inherit">
@@ -157,7 +164,11 @@ function NavigationBar() {
         </div>
         <Divider />
         <List>
-          <CoordinatorMenuList />
+          {user.userType === 'respondent' ? (
+            <RespondentMenuList setSelectedPage={props.setSelectedPage} />
+          ) : (
+            <CoordinatorMenuList setSelectedPage={props.setSelectedPage} />
+          )}
         </List>
       </Drawer>
     </React.Fragment>

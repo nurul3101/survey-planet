@@ -7,27 +7,25 @@ import PeopleIcon from '@material-ui/icons/People'
 import AssignmentIcon from '@material-ui/icons/Assignment'
 import { useHistory } from 'react-router-dom'
 
-function CoordinatorMenuList() {
+function CoordinatorMenuList(props) {
   const history = useHistory()
-  const handleNewSurvey = () => {
-    history.push('/new-survey')
-  }
+  const { setSelectedPage } = props
   return (
     <React.Fragment>
       <div>
-        <ListItem button onClick={handleNewSurvey}>
+        <ListItem button onClick={() => setSelectedPage('dashboard')}>
           <ListItemIcon>
             <DashboardIcon />
           </ListItemIcon>
-          <ListItemText primary="New Survey" />
+          <ListItemText primary="Dashboard" />
         </ListItem>
-        <ListItem button>
+        <ListItem button onClick={() => setSelectedPage('responses')}>
           <ListItemIcon>
             <PeopleIcon />
           </ListItemIcon>
           <ListItemText primary="Responses" />
         </ListItem>
-        <ListItem button>
+        <ListItem button onClick={() => setSelectedPage('your-surveys')}>
           <ListItemIcon>
             <AssignmentIcon />
           </ListItemIcon>

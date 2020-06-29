@@ -17,10 +17,12 @@ import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
 import { makeStyles } from '@material-ui/core/styles'
 import { useHistory } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 
 import SurveyHeroImage from '../../Assets/survey.svg'
 import configObj from '../../Configuration'
 import firebase from '../../firebase'
+import ActionTypes from './constant'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -64,6 +66,8 @@ function SignUp() {
   const classes = useStyles()
 
   const history = useHistory()
+
+  const dispatch = useDispatch()
 
   /* Defines which Mode is selected*/
   const [selectedMode, setSelectedMode] = useState('signin')
@@ -124,6 +128,11 @@ function SignUp() {
           const responseObj = await response.json()
 
           console.log('ResponseObj', responseObj)
+          localStorage.setItem('user', JSON.stringify(responseObj.userObj))
+          dispatch({
+            type: ActionTypes.FetchUserInfo,
+            user: responseObj.userObj,
+          })
 
           history.push('/dashboard')
         } catch (error) {
@@ -172,6 +181,13 @@ function SignUp() {
       console.log(responseObj)
 
       if (responseObj.success === true) {
+        localStorage.setItem('user', JSON.stringify(responseObj.userObj))
+
+        dispatch({
+          type: ActionTypes.FetchUserInfo,
+          user: responseObj.userObj,
+        })
+
         history.push('/dashboard')
         // store userObj in Redux store
       } else {

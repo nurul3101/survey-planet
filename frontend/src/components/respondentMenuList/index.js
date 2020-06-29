@@ -5,16 +5,17 @@ import ListItemText from '@material-ui/core/ListItemText'
 import DashboardIcon from '@material-ui/icons/Dashboard'
 import AssignmentIcon from '@material-ui/icons/Assignment'
 
-function RespondentMenuList() {
+function RespondentMenuList(props) {
+  const { setSelectedPage } = props
   return (
     <div>
-      <ListItem button>
+      <ListItem button onClick={() => setSelectedPage('dashboard')}>
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
         <ListItemText primary="Survey Feed" />
       </ListItem>
-      <ListItem button>
+      <ListItem button onClick={() => setSelectedPage('filled-surveys')}>
         <ListItemIcon>
           <AssignmentIcon />
         </ListItemIcon>

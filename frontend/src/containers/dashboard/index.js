@@ -1,14 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import clsx from 'clsx'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
 import NavigationBar from '../../Components/NavigationBar'
-//import { mainListItems, secondaryListItems } from './listItems'
-// import Chart from './Chart'
-// import Deposits from './Deposits'
-// import Orders from './Orders'
+import { useDispatch, useSelector } from 'react-redux'
 
 const drawerWidth = 240
 
@@ -95,25 +92,85 @@ function Dashboard() {
   const classes = useStyles()
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight)
 
+  const [selectedPage, setSelectedPage] = useState('dashboard')
+
+  const user = useSelector((state) => {
+    return state.signupReducer.user
+  })
+
   return (
     <div className={classes.root}>
-      <NavigationBar />
+      {console.log('user', selectedPage)}
+      <NavigationBar setSelectedPage={setSelectedPage} />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={8} lg={9}>
-              <Paper className={fixedHeightPaper}>
-                <div>Component1</div>
-              </Paper>
-            </Grid>
+          {selectedPage === 'dashboard' && (
+            <React.Fragment>
+              {user.userType === 'respondent' ? (
+                <Grid container spacing={3}>
+                  <Grid item xs={12} md={8} lg={9}>
+                    <Paper className={fixedHeightPaper}>
+                      <div>Respondent 1</div>
+                    </Paper>
+                  </Grid>
 
-            <Grid item xs={12} md={4} lg={3}>
-              <Paper className={fixedHeightPaper}>
-                <div>Component 2</div>
-              </Paper>
-            </Grid>
-          </Grid>
+                  <Grid item xs={12} md={4} lg={3}>
+                    <Paper className={fixedHeightPaper}>
+                      <div>Respondent 2</div>
+                    </Paper>
+                  </Grid>
+                </Grid>
+              ) : (
+                <Grid container spacing={3}>
+                  <Grid item xs={12} md={8} lg={9}>
+                    <Paper className={fixedHeightPaper}>
+                      <div>Coordinator 1</div>
+                    </Paper>
+                  </Grid>
+
+                  <Grid item xs={12} md={4} lg={3}>
+                    <Paper className={fixedHeightPaper}>
+                      <div>Coordinator 2</div>
+                    </Paper>
+                  </Grid>
+                </Grid>
+              )}
+            </React.Fragment>
+          )}
+          {selectedPage === 'responses' && (
+            <React.Fragment>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={8} lg={9}>
+                  <Paper className={fixedHeightPaper}>
+                    <div>Responses</div>
+                  </Paper>
+                </Grid>
+              </Grid>
+            </React.Fragment>
+          )}
+          {selectedPage === 'your-surveys' && (
+            <React.Fragment>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={8} lg={9}>
+                  <Paper className={fixedHeightPaper}>
+                    <div>Your Surveys</div>
+                  </Paper>
+                </Grid>
+              </Grid>
+            </React.Fragment>
+          )}
+          {selectedPage === 'filled-surveys' && (
+            <React.Fragment>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={8} lg={9}>
+                  <Paper className={fixedHeightPaper}>
+                    <div>Filled Surveys</div>
+                  </Paper>
+                </Grid>
+              </Grid>
+            </React.Fragment>
+          )}
         </Container>
       </main>
     </div>
