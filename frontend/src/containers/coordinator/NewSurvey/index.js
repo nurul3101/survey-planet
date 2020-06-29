@@ -1,16 +1,10 @@
 import React from 'react'
-import clsx from 'clsx'
+import NavigationBar from '../../../components/navigationBar'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import Grid from '@material-ui/core/Grid'
+import clsx from 'clsx'
 import Paper from '@material-ui/core/Paper'
-import NavigationBar from '../../components/navigationBar'
-//import { mainListItems, secondaryListItems } from './listItems'
-// import Chart from './Chart'
-// import Deposits from './Deposits'
-// import Orders from './Orders'
-
-const drawerWidth = 240
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -91,26 +85,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-function Dashboard() {
+const drawerWidth = 240
+
+function NewSurvey() {
   const classes = useStyles()
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight)
 
   return (
-    <div className={classes.root}>
+    <div style={{ display: 'flex' }}>
       <NavigationBar />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={8} lg={9}>
+            <Grid item xs={12} md={7} lg={8}>
               <Paper className={fixedHeightPaper}>
-                <div>Component1</div>
+                <div>Component3</div>
               </Paper>
             </Grid>
 
-            <Grid item xs={12} md={4} lg={3}>
+            <Grid item xs={12} md={5} lg={4}>
               <Paper className={fixedHeightPaper}>
-                <div>Component 2</div>
+                <input />
               </Paper>
             </Grid>
           </Grid>
@@ -120,4 +116,4 @@ function Dashboard() {
   )
 }
 
-export default Dashboard
+export default NewSurvey
