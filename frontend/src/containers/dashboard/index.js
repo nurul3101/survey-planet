@@ -6,6 +6,7 @@ import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
 import NavigationBar from '../../Components/NavigationBar'
 import { useDispatch, useSelector } from 'react-redux'
+import NewSurvey from '../Coordinator/NewSurvey'
 
 const drawerWidth = 240
 
@@ -83,9 +84,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
     flexDirection: 'column',
   },
-  fixedHeight: {
-    height: 240,
-  },
+  fixedHeight: {},
 }))
 
 function Dashboard() {
@@ -122,19 +121,7 @@ function Dashboard() {
                   </Grid>
                 </Grid>
               ) : (
-                <Grid container spacing={3}>
-                  <Grid item xs={12} md={8} lg={9}>
-                    <Paper className={fixedHeightPaper}>
-                      <div>Coordinator 1</div>
-                    </Paper>
-                  </Grid>
-
-                  <Grid item xs={12} md={4} lg={3}>
-                    <Paper className={fixedHeightPaper}>
-                      <div>Coordinator 2</div>
-                    </Paper>
-                  </Grid>
-                </Grid>
+                <NewSurvey />
               )}
             </React.Fragment>
           )}
