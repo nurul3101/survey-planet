@@ -37,6 +37,8 @@ function NewSurvey() {
   const [openTextInputDialog, setOpenTextInputDialog] = useState(false)
   const [placeholderQuestion, setPlaceholderQuestion] = useState('')
 
+  const [openRadioDialog, setOpenRadioDialog] = useState(false)
+
   const onComplete = (survey, options) => {
     console.log('survey')
   }
@@ -48,7 +50,13 @@ function NewSurvey() {
       title: e.target.value,
     })
   }
+
   const inputEl = useRef(null)
+  const multipleChoiceEl = useRef(null)
+  const option1El = useRef(null)
+  const option2El = useRef(null)
+  const option3El = useRef(null)
+  const option4El = useRef(null)
 
   var model = new Survey.Model(surveyJSON)
   model.mode = 'display'
@@ -80,6 +88,27 @@ function NewSurvey() {
             }}
           >
             Add Text Question
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            onClick={() => {
+              setOpenRadioDialog(true)
+            }}
+          >
+            Add Multiple Choice Question
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            className={classes.button}
+            onClick={() => {
+              setPlaceholderQuestion('')
+              setOpenTextInputDialog(true)
+            }}
+          >
+            Save Survey
           </Button>
         </Paper>
       </Grid>
@@ -125,6 +154,83 @@ function NewSurvey() {
             color="primary"
           >
             Add Question
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={openRadioDialog}
+        onClose={() => setOpenRadioDialog(false)}
+        aria-labelledby="form-dialog-title"
+        maxWidth={'md'}
+        fullWidth
+      >
+        <DialogTitle id="form-dialog-title">
+          Enter Text for Multiple Choice Question
+        </DialogTitle>
+        <DialogContent>
+          <TextField
+            margin="dense"
+            label="Your Multiple Choice Question"
+            type="text"
+            fullWidth
+            inputRef={multipleChoiceEl}
+          />
+          <div style={{ display: 'inline-grid' }}>
+            <TextField
+              margin="dense"
+              label="Option 1"
+              type="text"
+              inputRef={option1El}
+            />
+            <TextField
+              margin="dense"
+              label="Option 2"
+              type="text"
+              inputRef={option2El}
+            />
+            <TextField
+              margin="dense"
+              label="Option 3"
+              type="text"
+              inputRef={option3El}
+            />
+            <TextField
+              margin="dense"
+              label="Option 4"
+              type="text"
+              inputRef={option4El}
+            />
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenRadioDialog(false)} color="primary">
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              console.log(inputEl.current)
+              setSurveyJSON({
+                ...surveyJSON,
+                questions: [
+                  ...surveyJSON.questions,
+                  {
+                    type: 'radiogroup',
+                    title: multipleChoiceEl.current.value,
+                    choices: [
+                      option1El.current.value,
+                      option2El.current.value,
+                      option3El.current.value,
+                      option4El.current.value,
+                    ],
+                  },
+                ],
+              })
+              setOpenRadioDialog(false)
+            }}
+            color="primary"
+          >
+            Add Multiple Choice Question
           </Button>
         </DialogActions>
       </Dialog>
