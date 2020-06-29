@@ -13,7 +13,7 @@ import Badge from '@material-ui/core/Badge'
 import MenuIcon from '@material-ui/icons/Menu'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import NotificationsIcon from '@material-ui/icons/Notifications'
-import CoordinatorMenuList from '../coordinatorMenuList'
+import CoordinatorMenuList from '../CoordinatorMenuList'
 
 function NavigationBar() {
   const [open, setOpen] = React.useState(true)

@@ -18,8 +18,8 @@ import Select from '@material-ui/core/Select'
 import { makeStyles } from '@material-ui/core/styles'
 import { useHistory } from 'react-router-dom'
 
-import SurveyHeroImage from '../../assets/survey.svg'
-import configObj from '../../configuration'
+import SurveyHeroImage from '../../Assets/survey.svg'
+import configObj from '../../Configuration'
 import firebase from '../../firebase'
 
 const useStyles = makeStyles((theme) => ({
