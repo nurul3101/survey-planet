@@ -20,6 +20,9 @@ firestore.settings({
 const { signUpFunc } = require('./src/auth/signup')
 const { fetchUserInfoFunc } = require('./src/dashboard/fetchUserInfo')
 const { createNewSurveyFunc } = require('./src/coordinator/createNewSurvey')
+const {
+  fetchCoordinatorSurveysFunc,
+} = require('./src/coordinator/fetchCoordinatorSurveys')
 
 exports.signup = functions
   .runWith({ timeoutSeconds: 60, memory: '1GB' })
@@ -45,5 +48,14 @@ exports.createNewSurvey = functions
     var corsFn = cors({ origin: true })
     corsFn(request, response, () => {
       createNewSurveyFunc(request, response, firestore)
+    })
+  })
+
+exports.fetchCoordinatorSurveys = functions
+  .runWith({ timeoutSeconds: 60, memory: '1GB' })
+  .https.onRequest((request, response) => {
+    var corsFn = cors({ origin: true })
+    corsFn(request, response, () => {
+      fetchCoordinatorSurveysFunc(request, response, firestore)
     })
   })

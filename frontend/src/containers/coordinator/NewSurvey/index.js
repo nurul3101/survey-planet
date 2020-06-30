@@ -90,10 +90,6 @@ function NewSurvey() {
     }
   }
 
-  const onComplete = (survey, options) => {
-    console.log('survey')
-  }
-
   const saveSurvey = async (e) => {
     console.log('surveyJSON', surveyJSON)
     let reqObj = {}

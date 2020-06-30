@@ -6,7 +6,9 @@ import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
 import NavigationBar from '../../Components/NavigationBar'
 import { useDispatch, useSelector } from 'react-redux'
+
 import NewSurvey from '../Coordinator/NewSurvey'
+import YourSurveys from '../Coordinator/YourSurveys'
 
 const drawerWidth = 240
 
@@ -99,7 +101,6 @@ function Dashboard() {
 
   return (
     <div className={classes.root}>
-      {console.log('user', selectedPage)}
       <NavigationBar setSelectedPage={setSelectedPage} />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
@@ -138,13 +139,7 @@ function Dashboard() {
           )}
           {selectedPage === 'your-surveys' && (
             <React.Fragment>
-              <Grid container spacing={3}>
-                <Grid item xs={12} md={8} lg={9}>
-                  <Paper className={fixedHeightPaper}>
-                    <div>Your Surveys</div>
-                  </Paper>
-                </Grid>
-              </Grid>
+              <YourSurveys />
             </React.Fragment>
           )}
           {selectedPage === 'filled-surveys' && (
