@@ -10,6 +10,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import NewSurvey from '../Coordinator/NewSurvey'
 import YourSurveys from '../Coordinator/YourSurveys'
 
+import SurveyFeed from '../Respondent/SurveyFeed'
+
 const drawerWidth = 240
 
 const useStyles = makeStyles((theme) => ({
@@ -107,23 +109,7 @@ function Dashboard() {
         <Container maxWidth="lg" className={classes.container}>
           {selectedPage === 'dashboard' && (
             <React.Fragment>
-              {user.userType === 'respondent' ? (
-                <Grid container spacing={3}>
-                  <Grid item xs={12} md={8} lg={9}>
-                    <Paper className={fixedHeightPaper}>
-                      <div>Respondent 1</div>
-                    </Paper>
-                  </Grid>
-
-                  <Grid item xs={12} md={4} lg={3}>
-                    <Paper className={fixedHeightPaper}>
-                      <div>Respondent 2</div>
-                    </Paper>
-                  </Grid>
-                </Grid>
-              ) : (
-                <NewSurvey />
-              )}
+              {user.userType === 'respondent' ? <SurveyFeed /> : <NewSurvey />}
             </React.Fragment>
           )}
           {selectedPage === 'responses' && (
