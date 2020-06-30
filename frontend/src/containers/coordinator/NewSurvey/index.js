@@ -20,6 +20,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import * as Survey from 'survey-react'
 import { useSelector } from 'react-redux'
 import 'survey-react/survey.css'
+import configObj from '../../../Configuration'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -93,7 +94,7 @@ function NewSurvey() {
     console.log('survey')
   }
 
-  const saveSurvey = (e) => {
+  const saveSurvey = async (e) => {
     console.log('surveyJSON', surveyJSON)
     let reqObj = {}
     reqObj.surveyCreatorUid = user.uid
@@ -112,8 +113,29 @@ function NewSurvey() {
         }
       }
     }
-
     console.log('reqObj', reqObj)
+
+    try {
+      const response = await fetch(
+        `${configObj.cloudFunctionUrl}/createNewSurvey`,
+        {
+          method: 'post',
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...reqObj,
+          }),
+        }
+      )
+
+      const responseObj = await response.json()
+
+      console.log('ResponseObj', responseObj)
+    } catch (error) {
+      console.log('Error', error)
+    }
   }
 
   const onSurveyTitleChange = (e) => {
