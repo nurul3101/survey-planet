@@ -9,6 +9,9 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Checkbox from '@material-ui/core/Checkbox'
+import { Typography, Divider } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import * as Survey from 'survey-react'
 import 'survey-react/survey.css'
@@ -21,10 +24,13 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
   },
   fixedHeight: {
-    height: '80vh',
+    height: '83vh',
   },
   button: {
     margin: theme.spacing(2),
+  },
+  checkbox: {
+    margin: theme.spacing(1),
   },
 }))
 
@@ -39,8 +45,40 @@ function NewSurvey() {
 
   const [openRadioDialog, setOpenRadioDialog] = useState(false)
 
+  const [visibilityState, setVisibilityState] = useState({
+    shareToAllCheckbox: false,
+    shareToMale: false,
+    shareToFemale: false,
+    shareToLessthan18: false,
+    shareTo18And50: false,
+    shareToAbove50: false,
+  })
+
+  const handleCheckboxChange = (e) => {
+    setVisibilityState({
+      ...visibilityState,
+      [e.target.name]: e.target.checked,
+    })
+
+    if (e.target.name === 'shareToAllCheckbox' && e.target.checked === true) {
+      setVisibilityState({
+        ...visibilityState,
+        shareToAllCheckbox: true,
+        shareToMale: false,
+        shareToFemale: false,
+        shareToLessthan18: false,
+        shareTo18And50: false,
+        shareToAbove50: false,
+      })
+    }
+  }
+
   const onComplete = (survey, options) => {
     console.log('survey')
+  }
+
+  const saveSurvey = () => {
+    console.log('surveyJSON', surveyJSON)
   }
 
   const onSurveyTitleChange = (e) => {
@@ -99,14 +137,99 @@ function NewSurvey() {
           >
             Add Multiple Choice Question
           </Button>
+
+          <Typography variant="h6" component="h6" className={classes.checkbox}>
+            Survey Visibility
+          </Typography>
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={visibilityState.shareToAllCheckbox}
+                onChange={handleCheckboxChange}
+                name="shareToAllCheckbox"
+                color="primary"
+              />
+            }
+            label="Share to All"
+            className={classes.checkbox}
+          />
+          <Divider />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={visibilityState.shareToMale}
+                onChange={handleCheckboxChange}
+                name="shareToMale"
+                color="primary"
+                disabled={visibilityState.shareToAllCheckbox}
+              />
+            }
+            label="Male"
+            className={classes.checkbox}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={visibilityState.shareToFemale}
+                onChange={handleCheckboxChange}
+                name="shareToFemale"
+                color="primary"
+                disabled={visibilityState.shareToAllCheckbox}
+              />
+            }
+            label="Female"
+            className={classes.checkbox}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={visibilityState.shareToLessthan18}
+                onChange={handleCheckboxChange}
+                name="shareToLessthan18"
+                color="primary"
+                disabled={visibilityState.shareToAllCheckbox}
+              />
+            }
+            label="Age Less than 18"
+            className={classes.checkbox}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={visibilityState.shareTo18And50}
+                onChange={handleCheckboxChange}
+                name="shareTo18And50"
+                color="primary"
+                disabled={visibilityState.shareToAllCheckbox}
+              />
+            }
+            label="Age Between 18-50"
+            className={classes.checkbox}
+          />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={visibilityState.shareToAbove50}
+                onChange={handleCheckboxChange}
+                name="shareToAbove50"
+                color="primary"
+                disabled={visibilityState.shareToAllCheckbox}
+              />
+            }
+            label="Age Above 50"
+            className={classes.checkbox}
+          />
+
           <Button
             variant="contained"
             color="secondary"
             className={classes.button}
-            onClick={() => {
-              setPlaceholderQuestion('')
-              setOpenTextInputDialog(true)
-            }}
+            onClick={saveSurvey}
           >
             Save Survey
           </Button>
