@@ -345,9 +345,9 @@ function SignUp() {
                       onChange={handleSignupInput}
                       fullWidth
                     >
-                      <MenuItem value={'less than 18'}>Less than 18</MenuItem>
-                      <MenuItem value={'18 to 50'}>18-50</MenuItem>
-                      <MenuItem value={'more than 50'}>More than 50</MenuItem>
+                      <MenuItem value={'lessThan18'}>Less than 18</MenuItem>
+                      <MenuItem value={'between18And50'}>18-50</MenuItem>
+                      <MenuItem value={'moreThan50'}>More than 50</MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>

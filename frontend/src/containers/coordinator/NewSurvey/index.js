@@ -60,9 +60,9 @@ function NewSurvey() {
     shareToAllCheckbox: false,
     shareToMale: false,
     shareToFemale: false,
-    shareToLessthan18: false,
-    shareTo18And50: false,
-    shareToAbove50: false,
+    lessThan18: false,
+    between18And50: false,
+    moreThan50: false,
   })
 
   const [visibilityDate, setVisibilityDate] = React.useState(new Date())
@@ -83,9 +83,9 @@ function NewSurvey() {
         shareToAllCheckbox: true,
         shareToMale: false,
         shareToFemale: false,
-        shareToLessthan18: false,
-        shareTo18And50: false,
-        shareToAbove50: false,
+        lessThan18: false,
+        between18And50: false,
+        moreThan50: false,
       })
     }
   }
@@ -239,9 +239,9 @@ function NewSurvey() {
           <FormControlLabel
             control={
               <Checkbox
-                checked={visibilityState.shareToLessthan18}
+                checked={visibilityState.lessThan18}
                 onChange={handleCheckboxChange}
-                name="shareToLessthan18"
+                name="lessThan18"
                 color="primary"
                 disabled={visibilityState.shareToAllCheckbox}
               />
@@ -253,9 +253,9 @@ function NewSurvey() {
           <FormControlLabel
             control={
               <Checkbox
-                checked={visibilityState.shareTo18And50}
+                checked={visibilityState.between18And50}
                 onChange={handleCheckboxChange}
-                name="shareTo18And50"
+                name="between18And50"
                 color="primary"
                 disabled={visibilityState.shareToAllCheckbox}
               />
@@ -267,9 +267,9 @@ function NewSurvey() {
           <FormControlLabel
             control={
               <Checkbox
-                checked={visibilityState.shareToAbove50}
+                checked={visibilityState.moreThan50}
                 onChange={handleCheckboxChange}
-                name="shareToAbove50"
+                name="moreThan50"
                 color="primary"
                 disabled={visibilityState.shareToAllCheckbox}
               />

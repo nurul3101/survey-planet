@@ -113,7 +113,7 @@ function YourSurveys() {
                   >
                     {survey.surveyJSON.title}
                   </Typography>
-                  <div>
+                  <div style={{ margin: '16px' }}>
                     <Button
                       variant="contained"
                       color="primary"
