@@ -7,19 +7,18 @@ import clsx from 'clsx'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import DateFnsUtils from '@date-io/date-fns'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import {
   MuiPickersUtilsProvider,
-  KeyboardTimePicker,
   KeyboardDatePicker,
 } from '@material-ui/pickers'
 import Checkbox from '@material-ui/core/Checkbox'
 import { Typography, Divider } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import * as Survey from 'survey-react'
+import { useSelector } from 'react-redux'
 import 'survey-react/survey.css'
 
 const useStyles = makeStyles((theme) => ({
@@ -43,6 +42,11 @@ const useStyles = makeStyles((theme) => ({
 function NewSurvey() {
   const classes = useStyles()
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight)
+
+  const user = useSelector((state) => {
+    return state.signupReducer.user
+  })
+
   const [surveyTitle, setSurveyTitle] = useState('')
   const [surveyJSON, setSurveyJSON] = useState({ questions: [] })
 
@@ -63,7 +67,6 @@ function NewSurvey() {
   const [visibilityDate, setVisibilityDate] = React.useState(new Date())
 
   const handleVisibilityDateChange = (date) => {
-    console.log('date', date)
     setVisibilityDate(date)
   }
 
@@ -90,8 +93,27 @@ function NewSurvey() {
     console.log('survey')
   }
 
-  const saveSurvey = () => {
+  const saveSurvey = (e) => {
     console.log('surveyJSON', surveyJSON)
+    let reqObj = {}
+    reqObj.surveyCreatorUid = user.uid
+    reqObj.surveyCreatorName = user.name
+    reqObj.surveyJSON = surveyJSON
+    reqObj.visibleTillDate = visibilityDate
+    reqObj.visibleTillDateTs = new Date(visibilityDate).getTime()
+    reqObj.surveyAuthorization = []
+
+    if (visibilityState.shareToAllCheckbox === true) {
+      reqObj.surveyAuthorization.push('all')
+    } else {
+      for (const [key, value] of Object.entries(visibilityState)) {
+        if (value === true) {
+          reqObj.surveyAuthorization.push(key)
+        }
+      }
+    }
+
+    console.log('reqObj', reqObj)
   }
 
   const onSurveyTitleChange = (e) => {
@@ -241,7 +263,7 @@ function NewSurvey() {
             <KeyboardDatePicker
               disableToolbar
               variant="inline"
-              format="dd/mm/yyyy"
+              format="dd/MM/yyyy"
               margin="normal"
               id="date-picker-inline"
               disablePast
