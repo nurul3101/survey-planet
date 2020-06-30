@@ -9,7 +9,13 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
+import DateFnsUtils from '@date-io/date-fns'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from '@material-ui/pickers'
 import Checkbox from '@material-ui/core/Checkbox'
 import { Typography, Divider } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
@@ -24,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
   },
   fixedHeight: {
-    height: '83vh',
+    height: '87vh',
   },
   button: {
     margin: theme.spacing(2),
@@ -53,6 +59,13 @@ function NewSurvey() {
     shareTo18And50: false,
     shareToAbove50: false,
   })
+
+  const [visibilityDate, setVisibilityDate] = React.useState(new Date())
+
+  const handleVisibilityDateChange = (date) => {
+    console.log('date', date)
+    setVisibilityDate(date)
+  }
 
   const handleCheckboxChange = (e) => {
     setVisibilityState({
@@ -135,7 +148,7 @@ function NewSurvey() {
               setOpenRadioDialog(true)
             }}
           >
-            Add Multiple Choice Question
+            Add Multiple Choice
           </Button>
 
           <Typography variant="h6" component="h6" className={classes.checkbox}>
@@ -224,6 +237,22 @@ function NewSurvey() {
             label="Age Above 50"
             className={classes.checkbox}
           />
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <KeyboardDatePicker
+              disableToolbar
+              variant="inline"
+              format="dd/mm/yyyy"
+              margin="normal"
+              id="date-picker-inline"
+              disablePast
+              label="Visible Till"
+              value={visibilityDate}
+              onChange={handleVisibilityDateChange}
+              KeyboardButtonProps={{
+                'aria-label': 'change date',
+              }}
+            />
+          </MuiPickersUtilsProvider>
 
           <Button
             variant="contained"
@@ -231,7 +260,7 @@ function NewSurvey() {
             className={classes.button}
             onClick={saveSurvey}
           >
-            Save Survey
+            Create Survey
           </Button>
         </Paper>
       </Grid>
