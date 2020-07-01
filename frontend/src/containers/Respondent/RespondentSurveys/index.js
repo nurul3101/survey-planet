@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
+import clsx from 'clsx'
 import { Typography, Divider } from '@material-ui/core'
 import { useSelector } from 'react-redux'
-import Button from '@material-ui/core/Button'
-import clsx from 'clsx'
 import { makeStyles } from '@material-ui/core/styles'
+import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -29,30 +29,29 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-function SurveyFeed() {
+function RespondentSurveys() {
   const classes = useStyles()
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight)
-
-  const [surveysInFeed, setSurveysInFeed] = useState([])
-  const [noSurveyAvailableMessage, setNoSurveyAvailableMessage] = useState(
-    false
-  )
-
-  const [openSurveyDialog, setOpenSurveyDialog] = useState(false)
-  const [openedSurvey, setOpenedSurvey] = useState({})
-  const [openedSurveyId, setOpenedSurveyId] = useState('')
 
   const user = useSelector((state) => {
     return state.signupReducer.user
   })
 
-  const fetchSurveyFeed = async () => {
+  const [surveys, setSurveys] = useState([])
+  const [showNoSurveyMessage, setShowNoSurveyMessage] = useState(false)
+
+  const [openSurveyDialog, setOpenSurveyDialog] = useState(false)
+
+  const [openedSurvey, setOpenedSurvey] = useState({})
+  const [openedSurveyData, setOpenedSurveyData] = useState({})
+
+  const fetchRespondentSurveys = async () => {
     try {
       let reqObj = {
-        ...user,
+        uid: user.uid,
       }
       const response = await fetch(
-        `${configObj.cloudFunctionUrl}/getSurveyFeed`,
+        `${configObj.cloudFunctionUrl}/getRespondentSurveys`,
         {
           method: 'post',
           headers: {
@@ -67,12 +66,11 @@ function SurveyFeed() {
 
       const responseObj = await response.json()
 
-      console.log('ResponseObj', responseObj)
-
+      console.log('responseObj', responseObj)
       if (responseObj.success === true) {
-        setSurveysInFeed(responseObj.surveys)
+        setSurveys(responseObj.surveys)
         if (responseObj.surveys.length === 0) {
-          setNoSurveyAvailableMessage(true)
+          setShowNoSurveyMessage(true)
         }
       }
     } catch (error) {
@@ -81,75 +79,34 @@ function SurveyFeed() {
   }
 
   useEffect(() => {
-    console.log(user)
-    fetchSurveyFeed()
+    console.log('User@', user)
+    fetchRespondentSurveys()
   }, [user])
 
   const openSurveyInDialog = (e, survey) => {
     console.log('survey', survey)
-    setOpenedSurvey(survey.surveyJSON)
+    setOpenedSurvey(survey.surveyQuestionObj.surveyJSON)
+    setOpenedSurveyData(survey.surveyAnswerObj.surveyAnswerJSON)
     setOpenSurveyDialog(true)
-    setOpenedSurveyId(survey._id)
-  }
-
-  const submitSurvey = async (survey) => {
-    let surveyObj = survey.data
-    console.log(surveyObj)
-
-    // Call API To submit Survey
-    let reqObj = {}
-
-    reqObj.surveyFillerUid = user.uid
-    reqObj.surveyFillerName = user.name
-    reqObj.surveyFillerEmail = user.email
-    reqObj.surveyFillerGender = user.gender
-    reqObj.surveyFillerAge = user.age
-    reqObj.surveyAnswerJSON = surveyObj
-    reqObj.surveyId = openedSurveyId
-
-    console.log('reqObj', reqObj)
-
-    try {
-      const response = await fetch(
-        `${configObj.cloudFunctionUrl}/submitSurvey`,
-        {
-          method: 'post',
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ...reqObj,
-          }),
-        }
-      )
-
-      const responseObj = await response.json()
-
-      console.log('ResponseObj', responseObj)
-    } catch (error) {
-      console.log('Error', error)
-    }
-
-    setOpenSurveyDialog(false)
   }
 
   var model = new Survey.Model(openedSurvey)
+  model.mode = 'display'
+  model.data = openedSurveyData
 
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Paper className={fixedHeightPaper}>
           <Typography variant="h5" component="h5" className={classes.divider}>
-            Survey Feed
+            Respondent Filled Surveys
           </Typography>
 
           <Divider className={classes.divider} />
 
-          {surveysInFeed.map((survey, index) => {
+          {surveys.map((survey, index) => {
             return (
               <React.Fragment key={index}>
-                {console.log('survey', survey)}
                 <div
                   style={{ display: 'flex', justifyContent: 'space-between' }}
                 >
@@ -158,7 +115,7 @@ function SurveyFeed() {
                     component="h6"
                     className={classes.divider}
                   >
-                    {survey.surveyJSON.title}
+                    {survey.surveyQuestionObj.surveyJSON.title}
                   </Typography>
                   <div style={{ margin: '16px' }}>
                     <Button
@@ -167,13 +124,25 @@ function SurveyFeed() {
                       className={classes.button}
                       onClick={(e) => openSurveyInDialog(e, survey)}
                     >
-                      Fill Survey
+                      View Survey
                     </Button>
                   </div>
                 </div>
               </React.Fragment>
             )
           })}
+
+          {showNoSurveyMessage === true && (
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <Typography
+                variant="h5"
+                component="h5"
+                className={classes.divider}
+              >
+                No Surveys Filled
+              </Typography>
+            </div>
+          )}
         </Paper>
 
         <Dialog
@@ -185,11 +154,11 @@ function SurveyFeed() {
         >
           <DialogTitle id="form-dialog-title">Survey</DialogTitle>
           <DialogContent>
-            <Survey.Survey model={model} onComplete={submitSurvey} />
+            <Survey.Survey model={model} />
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setOpenSurveyDialog(false)} color="primary">
-              Cancel
+              Ok
             </Button>
           </DialogActions>
         </Dialog>
@@ -198,4 +167,4 @@ function SurveyFeed() {
   )
 }
 
-export default SurveyFeed
+export default RespondentSurveys

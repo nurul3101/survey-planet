@@ -19,11 +19,31 @@ exports.getSurveyFeedFunc = async (req, res, firestore) => {
       dataArray.push(documentObj)
     })
 
-    console.log('dataArray')
+    // Get Surveys Already Filled by the Respondent
+    const respondentAnswersSnapshot = await firestore
+      .collection('SurveyAnswers')
+      .where('surveyFillerUid', '==', reqObj.uid)
+      .get()
+
+    let respondentAnswers = []
+
+    respondentAnswersSnapshot.forEach((doc) => {
+      let documentObj = doc.data()
+      respondentAnswers.push(documentObj)
+    })
+
+    let surveysForFeed = []
+    dataArray.forEach((surveyObj) => {
+      respondentAnswers.forEach((surveyResponseObj) => {
+        if (surveyObj._id !== surveyResponseObj.surveyId) {
+          surveysForFeed.push(surveyObj)
+        }
+      })
+    })
 
     res.status(200).send({
       success: true,
-      surveys: dataArray,
+      surveys: surveysForFeed,
     })
   } catch (error) {
     console.log('Error in Fetching Survey Feed', error)

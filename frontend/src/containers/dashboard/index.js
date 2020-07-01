@@ -9,8 +9,10 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import NewSurvey from '../Coordinator/NewSurvey'
 import YourSurveys from '../Coordinator/YourSurveys'
+import SurveyResponses from '../Coordinator/SurveyResponses'
 
 import SurveyFeed from '../Respondent/SurveyFeed'
+import RespondentSurveys from '../Respondent/RespondentSurveys'
 
 const drawerWidth = 240
 
@@ -114,13 +116,7 @@ function Dashboard() {
           )}
           {selectedPage === 'responses' && (
             <React.Fragment>
-              <Grid container spacing={3}>
-                <Grid item xs={12} md={8} lg={9}>
-                  <Paper className={fixedHeightPaper}>
-                    <div>Responses</div>
-                  </Paper>
-                </Grid>
-              </Grid>
+              <SurveyResponses />
             </React.Fragment>
           )}
           {selectedPage === 'your-surveys' && (
@@ -130,13 +126,7 @@ function Dashboard() {
           )}
           {selectedPage === 'filled-surveys' && (
             <React.Fragment>
-              <Grid container spacing={3}>
-                <Grid item xs={12} md={8} lg={9}>
-                  <Paper className={fixedHeightPaper}>
-                    <div>Filled Surveys</div>
-                  </Paper>
-                </Grid>
-              </Grid>
+              <RespondentSurveys />
             </React.Fragment>
           )}
         </Container>

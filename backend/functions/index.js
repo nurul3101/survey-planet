@@ -25,6 +25,12 @@ const {
 } = require('./src/coordinator/fetchCoordinatorSurveys')
 const { getSurveyFeedFunc } = require('./src/respondent/getSurveyFeed')
 const { submitSurveyFunc } = require('./src/respondent/submitSurvey')
+const {
+  getRespondentSurveysFunc,
+} = require('./src/respondent/getRespondentSurveys')
+const {
+  fetchResponsesToSurveysFunc,
+} = require('./src/coordinator/fetchResponsesToSurveys')
 
 exports.signup = functions
   .runWith({ timeoutSeconds: 60, memory: '1GB' })
@@ -77,5 +83,23 @@ exports.submitSurvey = functions
     var corsFn = cors({ origin: true })
     corsFn(request, response, () => {
       submitSurveyFunc(request, response, firestore)
+    })
+  })
+
+exports.getRespondentSurveys = functions
+  .runWith({ timeoutSeconds: 60, memory: '1GB' })
+  .https.onRequest((request, response) => {
+    var corsFn = cors({ origin: true })
+    corsFn(request, response, () => {
+      getRespondentSurveysFunc(request, response, firestore)
+    })
+  })
+
+exports.fetchResponsesToSurveys = functions
+  .runWith({ timeoutSeconds: 60, memory: '1GB' })
+  .https.onRequest((request, response) => {
+    var corsFn = cors({ origin: true })
+    corsFn(request, response, () => {
+      fetchResponsesToSurveysFunc(request, response, firestore)
     })
   })

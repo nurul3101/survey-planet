@@ -27,9 +27,13 @@ const useStyles = makeStyles((theme) => ({
   divider: {
     margin: theme.spacing(2),
   },
+  dividerDense: {
+    margin: theme.spacing(1),
+    marginLeft: theme.spacing(2),
+  },
 }))
 
-function YourSurveys() {
+function SurveyResponses() {
   const classes = useStyles()
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight)
 
@@ -42,6 +46,7 @@ function YourSurveys() {
   const [openSurveyDialog, setOpenSurveyDialog] = useState(false)
 
   const [openedSurvey, setOpenedSurvey] = useState({})
+  const [openedSurveyData, setOpenedSurveyData] = useState({})
 
   const fetchSurveys = async () => {
     try {
@@ -49,7 +54,7 @@ function YourSurveys() {
         uid: user.uid,
       }
       const response = await fetch(
-        `${configObj.cloudFunctionUrl}/fetchCoordinatorSurveys`,
+        `${configObj.cloudFunctionUrl}/fetchResponsesToSurveys`,
         {
           method: 'post',
           headers: {
@@ -63,6 +68,8 @@ function YourSurveys() {
       )
 
       const responseObj = await response.json()
+
+      console.log('responseObj', responseObj)
 
       if (responseObj.success === true) {
         setSurveys(responseObj.surveys)
@@ -80,52 +87,74 @@ function YourSurveys() {
     fetchSurveys()
   }, [user])
 
-  const openSurveyInDialog = (e, survey) => {
+  const openSurveyInDialog = (e, survey, surveyAnswer) => {
     console.log('survey', survey)
-    setOpenedSurvey(survey.surveyJSON)
+    setOpenedSurvey(survey.surveyQuestion.surveyJSON)
+    setOpenedSurveyData(surveyAnswer.surveyAnswerJSON)
     setOpenSurveyDialog(true)
   }
 
   var model = new Survey.Model(openedSurvey)
   model.mode = 'display'
-
+  model.data = openedSurveyData
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Paper className={fixedHeightPaper}>
           <Typography variant="h5" component="h5" className={classes.divider}>
-            Your Surveys
+            Responses To Your Surveys
           </Typography>
 
           <Divider className={classes.divider} />
 
           {surveys.map((survey, index) => {
-            return (
-              <React.Fragment key={index}>
-                {console.log('survey', survey)}
-                <div
-                  style={{ display: 'flex', justifyContent: 'space-between' }}
-                >
-                  <Typography
-                    variant="h6"
-                    component="h6"
-                    className={classes.divider}
-                  >
-                    {survey.surveyJSON.title}
-                  </Typography>
-                  <div style={{ margin: '16px' }}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      className={classes.button}
-                      onClick={(e) => openSurveyInDialog(e, survey)}
+            if (survey.surveyAnswers.length > 0) {
+              return survey.surveyAnswers.map((surveyAnswer) => {
+                return (
+                  <React.Fragment key={index}>
+                    {console.log('survey', survey)}
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                      }}
                     >
-                      View Survey
-                    </Button>
-                  </div>
-                </div>
-              </React.Fragment>
-            )
+                      <div>
+                        <Typography
+                          variant="h6"
+                          component="h6"
+                          className={classes.divider}
+                        >
+                          Survey Name: {survey.surveyQuestion.surveyJSON.title}
+                        </Typography>
+                        <Typography
+                          variant="subtitle1"
+                          component="h6"
+                          className={classes.dividerDense}
+                        >
+                          Respondent Name: {surveyAnswer.surveyFillerName}
+                          <pre />
+                          Respondent Email: {surveyAnswer.surveyFillerEmail}
+                        </Typography>
+                      </div>
+                      <div style={{ margin: '16px' }}>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          className={classes.button}
+                          onClick={(e) =>
+                            openSurveyInDialog(e, survey, surveyAnswer)
+                          }
+                        >
+                          View Survey
+                        </Button>
+                      </div>
+                    </div>
+                    <Divider />
+                  </React.Fragment>
+                )
+              })
+            }
           })}
 
           {showNoSurveysMessage === true && (
@@ -163,4 +192,4 @@ function YourSurveys() {
   )
 }
 
-export default YourSurveys
+export default SurveyResponses
