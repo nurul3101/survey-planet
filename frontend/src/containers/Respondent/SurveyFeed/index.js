@@ -139,7 +139,7 @@ function SurveyFeed() {
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
-        <Paper className={fixedHeightPaper}>
+        <Paper className={fixedHeightPaper} style={{ maxHeight: '84vh' }}>
           <Typography variant="h5" component="h5" className={classes.divider}>
             Survey Feed
           </Typography>

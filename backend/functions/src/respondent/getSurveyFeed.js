@@ -1,6 +1,7 @@
+var differenceBy = require('lodash/differenceBy')
+
 exports.getSurveyFeedFunc = async (req, res, firestore) => {
   let reqObj = req.body
-  console.log('reqObj', reqObj)
   try {
     const querySnapshot = await firestore
       .collection('Surveys')
@@ -29,21 +30,14 @@ exports.getSurveyFeedFunc = async (req, res, firestore) => {
 
     respondentAnswersSnapshot.forEach((doc) => {
       let documentObj = doc.data()
-      respondentAnswers.push(documentObj)
+      respondentAnswers.push({ ...documentObj, _id: documentObj.surveyId })
     })
 
-    let surveysForFeed = []
-    dataArray.forEach((surveyObj) => {
-      respondentAnswers.forEach((surveyResponseObj) => {
-        if (surveyObj._id !== surveyResponseObj.surveyId) {
-          surveysForFeed.push(surveyObj)
-        }
-      })
-    })
+    const filteredArrays = differenceBy(dataArray, respondentAnswers, '_id')
 
     res.status(200).send({
       success: true,
-      surveys: surveysForFeed,
+      surveys: filteredArrays,
     })
   } catch (error) {
     console.log('Error in Fetching Survey Feed', error)
