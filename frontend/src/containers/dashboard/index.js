@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import clsx from 'clsx'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
@@ -6,6 +6,7 @@ import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
 import NavigationBar from '../../Components/NavigationBar'
 import { useDispatch, useSelector } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 
 import NewSurvey from '../Coordinator/NewSurvey'
 import YourSurveys from '../Coordinator/YourSurveys'
@@ -96,12 +97,19 @@ const useStyles = makeStyles((theme) => ({
 function Dashboard() {
   const classes = useStyles()
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight)
-
+  const history = useHistory()
   const [selectedPage, setSelectedPage] = useState('dashboard')
 
   const user = useSelector((state) => {
     return state.signupReducer.user
   })
+
+  useEffect(() => {
+    console.log(user)
+    if (!user.uid) {
+      history.push('/')
+    }
+  }, [user])
 
   return (
     <div className={classes.root}>
