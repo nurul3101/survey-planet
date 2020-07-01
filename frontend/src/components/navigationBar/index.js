@@ -143,6 +143,9 @@ function NavigationBar(props) {
             {user.userType === 'respondent' ? 'Respondent' : 'Coordinator'}{' '}
             Dashboard
           </Typography>
+          <IconButton color="inherit" style={{ fontSize: '20px' }}>
+            Hello{user.name ? `, ${user.name}` : ``}
+          </IconButton>
         </Toolbar>
       </AppBar>
       <Drawer
