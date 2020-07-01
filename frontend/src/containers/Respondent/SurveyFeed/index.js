@@ -125,7 +125,7 @@ function SurveyFeed() {
       )
 
       const responseObj = await response.json()
-
+      //fetchSurveyFeed()
       console.log('ResponseObj', responseObj)
     } catch (error) {
       console.log('Error', error)
@@ -149,7 +149,6 @@ function SurveyFeed() {
           {surveysInFeed.map((survey, index) => {
             return (
               <React.Fragment key={index}>
-                {console.log('survey', survey)}
                 <div
                   style={{ display: 'flex', justifyContent: 'space-between' }}
                 >
@@ -174,6 +173,18 @@ function SurveyFeed() {
               </React.Fragment>
             )
           })}
+
+          {noSurveyAvailableMessage === true && (
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <Typography
+                variant="h5"
+                component="h5"
+                className={classes.divider}
+              >
+                No Surveys Available
+              </Typography>
+            </div>
+          )}
         </Paper>
 
         <Dialog

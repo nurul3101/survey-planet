@@ -164,7 +164,7 @@ function SurveyResponses() {
                 component="h5"
                 className={classes.divider}
               >
-                No Available Surveys
+                No Responses Yet!
               </Typography>
             </div>
           )}

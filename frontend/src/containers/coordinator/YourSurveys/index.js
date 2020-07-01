@@ -135,7 +135,7 @@ function YourSurveys() {
                 component="h5"
                 className={classes.divider}
               >
-                No Available Surveys
+                No Surveys Created
               </Typography>
             </div>
           )}
