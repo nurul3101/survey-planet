@@ -143,11 +143,6 @@ function NavigationBar(props) {
             {user.userType === 'respondent' ? 'Respondent' : 'Coordinator'}{' '}
             Dashboard
           </Typography>
-          <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
         </Toolbar>
       </AppBar>
       <Drawer
