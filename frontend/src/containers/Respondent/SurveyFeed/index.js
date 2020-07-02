@@ -12,6 +12,10 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import * as Survey from 'survey-react'
 import 'survey-react/survey.css'
+
+import toaster from 'toasted-notes'
+import 'toasted-notes/src/styles.css'
+
 import configObj from '../../../Configuration'
 
 const useStyles = makeStyles((theme) => ({
@@ -125,10 +129,22 @@ function SurveyFeed() {
       )
 
       const responseObj = await response.json()
-      //fetchSurveyFeed()
+
+      if (responseObj.success === true) {
+        toaster.notify('Survey Submitted', {
+          duration: 2000,
+          position: 'bottom-right',
+        })
+      }
+      fetchSurveyFeed()
+
       console.log('ResponseObj', responseObj)
     } catch (error) {
       console.log('Error', error)
+      toaster.notify(`Operation Failed: ${error}`, {
+        duration: 4000,
+        position: 'bottom-right',
+      })
     }
 
     setOpenSurveyDialog(false)

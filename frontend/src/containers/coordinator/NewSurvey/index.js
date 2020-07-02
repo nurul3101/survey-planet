@@ -20,6 +20,10 @@ import { makeStyles } from '@material-ui/core/styles'
 import * as Survey from 'survey-react'
 import { useSelector } from 'react-redux'
 import 'survey-react/survey.css'
+
+import toaster from 'toasted-notes'
+import 'toasted-notes/src/styles.css'
+
 import configObj from '../../../Configuration'
 
 const useStyles = makeStyles((theme) => ({
@@ -90,47 +94,100 @@ function NewSurvey() {
     }
   }
 
+  const CheckForErrors = () => {
+    if (surveyTitle === '') {
+      toaster.notify('Enter Survey Title', {
+        duration: 2000,
+        position: 'bottom-right',
+      })
+      return false
+    } else if (
+      visibilityState.shareToAllCheckbox === false &&
+      visibilityState.shareToMale === false &&
+      visibilityState.lessThan18 === false &&
+      visibilityState.shareToFemale === false &&
+      visibilityState.between18And50 === false &&
+      visibilityState.moreThan50 === false
+    ) {
+      toaster.notify('Select Survey Visibility', {
+        duration: 2000,
+        position: 'bottom-right',
+      })
+      return false
+    } else if (surveyJSON.questions.length === 0) {
+      toaster.notify('Enter Atleast One Question', {
+        duration: 2000,
+        position: 'bottom-right',
+      })
+      return false
+    } else {
+      return true
+    }
+  }
+
   const saveSurvey = async (e) => {
     console.log('surveyJSON', surveyJSON)
-    let reqObj = {}
-    reqObj.surveyCreatorUid = user.uid
-    reqObj.surveyCreatorName = user.name
-    reqObj.surveyJSON = surveyJSON
-    reqObj.visibleTillDate = visibilityDate
-    reqObj.visibleTillDateTs = new Date(visibilityDate).getTime()
-    reqObj.surveyAuthorization = []
+    if (CheckForErrors()) {
+      let reqObj = {}
+      reqObj.surveyCreatorUid = user.uid
+      reqObj.surveyCreatorName = user.name
+      reqObj.surveyJSON = surveyJSON
+      reqObj.visibleTillDate = visibilityDate
+      reqObj.visibleTillDateTs = new Date(visibilityDate).getTime()
+      reqObj.surveyAuthorization = []
 
-    if (visibilityState.shareToAllCheckbox === true) {
-      reqObj.surveyAuthorization.push('all')
-    } else {
-      for (const [key, value] of Object.entries(visibilityState)) {
-        if (value === true) {
-          reqObj.surveyAuthorization.push(key)
+      if (visibilityState.shareToAllCheckbox === true) {
+        reqObj.surveyAuthorization.push('all')
+      } else {
+        for (const [key, value] of Object.entries(visibilityState)) {
+          if (value === true) {
+            reqObj.surveyAuthorization.push(key)
+          }
         }
       }
-    }
-    console.log('reqObj', reqObj)
+      console.log('reqObj', reqObj)
 
-    try {
-      const response = await fetch(
-        `${configObj.cloudFunctionUrl}/createNewSurvey`,
-        {
-          method: 'post',
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ...reqObj,
-          }),
+      try {
+        const response = await fetch(
+          `${configObj.cloudFunctionUrl}/createNewSurvey`,
+          {
+            method: 'post',
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              ...reqObj,
+            }),
+          }
+        )
+
+        const responseObj = await response.json()
+
+        console.log('ResponseObj', responseObj)
+        if (responseObj.success === true) {
+          toaster.notify('Survey Created', {
+            duration: 2000,
+            position: 'bottom-right',
+          })
+          setVisibilityState({
+            shareToAllCheckbox: false,
+            shareToMale: false,
+            shareToFemale: false,
+            lessThan18: false,
+            between18And50: false,
+            moreThan50: false,
+          })
+          setSurveyJSON({ questions: [] })
+          setSurveyTitle('')
         }
-      )
-
-      const responseObj = await response.json()
-
-      console.log('ResponseObj', responseObj)
-    } catch (error) {
-      console.log('Error', error)
+      } catch (error) {
+        console.log('Error', error)
+        toaster.notify(`Operation Failed: ${error}`, {
+          duration: 2000,
+          position: 'bottom-right',
+        })
+      }
     }
   }
 

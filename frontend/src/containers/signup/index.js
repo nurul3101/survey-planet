@@ -18,6 +18,8 @@ import Select from '@material-ui/core/Select'
 import { makeStyles } from '@material-ui/core/styles'
 import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
+import toaster from 'toasted-notes'
+import 'toasted-notes/src/styles.css'
 
 import SurveyHeroImage from '../../Assets/survey.svg'
 import configObj from '../../Configuration'
@@ -78,6 +80,15 @@ function SignUp() {
     password: '',
   })
 
+  const [signupErrors, setSignupErrors] = useState({
+    name: true,
+    email: true,
+    password: true,
+    gender: true,
+    userType: true,
+    age: true,
+  })
+
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
@@ -134,13 +145,26 @@ function SignUp() {
             user: responseObj.userObj,
           })
 
+          toaster.notify('Authentication Successful', {
+            duration: 2000,
+            position: 'bottom-right',
+          })
+
           history.push('/dashboard')
         } catch (error) {
+          toaster.notify(`Authentication Failed: ${error}`, {
+            duration: 4000,
+            position: 'bottom-right',
+          })
           console.log('Error', error)
         }
       })
       .catch((error) => {
         console.log('Error in Signin', error)
+        toaster.notify(`Authentication Failed: ${error}`, {
+          duration: 4000,
+          position: 'bottom-right',
+        })
       })
   }
 
@@ -160,41 +184,105 @@ function SignUp() {
     })
   }
 
+  const CheckForErrors = () => {
+    if (signupState.name === '') {
+      return false
+    } else if (signupState.email === '') {
+      return false
+    } else if (signupState.password === '') {
+      return false
+    } else if (signupState.gender === '') {
+      return false
+    } else if (signupState.age === '') {
+      return false
+    } else if (signupState.userType === '') {
+      return false
+    } else {
+      return true
+    }
+  }
+
   const executeSignUp = async (e) => {
     e.preventDefault()
 
-    console.log(signupState)
-    let requestObj = { ...signupState }
-    try {
-      let response = await fetch(`${configObj.cloudFunctionUrl}/signup`, {
-        method: 'post',
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...requestObj,
-        }),
-      })
-
-      let responseObj = await response.json()
-      console.log(responseObj)
-
-      if (responseObj.success === true) {
-        localStorage.setItem('user', JSON.stringify(responseObj.userObj))
-
-        dispatch({
-          type: ActionTypes.FetchUserInfo,
-          user: responseObj.userObj,
+    if (CheckForErrors()) {
+      let requestObj = { ...signupState }
+      try {
+        let response = await fetch(`${configObj.cloudFunctionUrl}/signup`, {
+          method: 'post',
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...requestObj,
+          }),
         })
 
-        history.push('/dashboard')
-        // store userObj in Redux store
-      } else {
-        //show error
+        let responseObj = await response.json()
+        console.log(responseObj)
+
+        if (responseObj.success === true) {
+          localStorage.setItem('user', JSON.stringify(responseObj.userObj))
+
+          dispatch({
+            type: ActionTypes.FetchUserInfo,
+            user: responseObj.userObj,
+          })
+
+          toaster.notify('Account Created Successfully', {
+            duration: 2000,
+            position: 'bottom-right',
+          })
+
+          history.push('/dashboard')
+          // store userObj in Redux store
+        } else {
+          //show error
+          toaster.notify('Encountered Error', {
+            duration: 2000,
+            position: 'bottom-right',
+          })
+        }
+      } catch (error) {
+        console.log('Error in signup', error)
+        toaster.notify(`${error}`, {
+          duration: 2000,
+          position: 'bottom-right',
+        })
       }
-    } catch (error) {
-      console.log('Error in signup', error)
+    } else {
+      toaster.notify('Please fill required inputs', {
+        duration: 2000,
+        position: 'bottom-right',
+      })
+    }
+  }
+
+  const checkPassword = () => {
+    if (signupState.password.length < 6) {
+      toaster.notify('Minimum password length should be 6', {
+        duration: 2000,
+        position: 'bottom-right',
+      })
+    }
+  }
+
+  const checkEmailSignup = () => {
+    if (!/\S+@\S+\.\S+/.test(signupState.email)) {
+      toaster.notify('Enter Valid Email', {
+        duration: 2000,
+        position: 'bottom-right',
+      })
+    }
+  }
+
+  const checkEmailSignIn = () => {
+    if (!/\S+@\S+\.\S+/.test(signinState.email)) {
+      toaster.notify('Enter Valid Email', {
+        duration: 2000,
+        position: 'bottom-right',
+      })
     }
   }
 
@@ -222,6 +310,7 @@ function SignUp() {
                 autoFocus
                 value={signinState.email}
                 onChange={handleSigninInput}
+                onBlur={checkEmailSignIn}
               />
               <TextField
                 variant="outlined"
@@ -292,6 +381,7 @@ function SignUp() {
                     autoComplete="email"
                     value={signupState.email}
                     onChange={handleSignupInput}
+                    onBlur={checkEmailSignup}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -306,6 +396,7 @@ function SignUp() {
                     autoComplete="current-password"
                     value={signupState.password}
                     onChange={handleSignupInput}
+                    onBlur={checkPassword}
                   />
                 </Grid>
                 <Grid item xs={6}>
